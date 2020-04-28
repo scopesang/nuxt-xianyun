@@ -1,6 +1,6 @@
 # xianyun
 
-> My beautiful Nuxt.js project
+> nuxt-xianyun  肖徐廖郭张
 
 ## Build Setup
 
