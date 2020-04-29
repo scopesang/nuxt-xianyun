@@ -3,18 +3,18 @@
     <!-- 页面详情开始 -->
     <div class="details">
       <div class="htmlRoute">
-        <router-link to="#">酒店</router-link>
+        <router-link to="/hotel">{{hotel.big_cate}}</router-link>
         <i class="el-icon-arrow-right"></i>
-        <router-link to="#">广州酒店</router-link>
+        <router-link to="#">{{hotel.real_city}}{{hotel.big_cate}}</router-link>
         <i class="el-icon-arrow-right"></i>
-        <span>锦江之星(吴泾店)</span>
+        <span>{{hotel.name}}</span>
       </div>
       <div class="hotelMessage">
-        <h3>锦江之星(吴泾店)</h3>
-        <p>jin jiang zhi xing (sahng hai min hang wu jing dian)</p>
+        <h3>{{hotel.name}}</h3>
+        <p>{{hotel.alias}}</p>
         <p>
           <i class="el-icon-location-information">
-            <span>剑川路165号(近龙吴路)</span>
+            <span>{{hotel.address}}</span>
           </i>
         </p>
       </div>
@@ -23,15 +23,10 @@
     <!-- 展示图开始 -->
     <div class="roomPhoto">
       <div class="main">
-        <img src="https://jdc.jd.com/img/600" alt />
+        <img :src="showHotelImg" alt />
       </div>
       <div class="vice">
-        <img src="https://jdc.jd.com/img/200" alt />
-        <img src="https://jdc.jd.com/img/200" alt />
-        <img src="https://jdc.jd.com/img/200" alt />
-        <img src="https://jdc.jd.com/img/200" alt />
-        <img src="https://jdc.jd.com/img/200" alt />
-        <img src="https://jdc.jd.com/img/200" alt />
+        <img :src="item" alt v-for="(item,index) in hotelImgs" :key="index" @click="showImg(item)" />
       </div>
     </div>
     <!-- 展示图结束 -->
@@ -43,11 +38,11 @@
         <span>最低价格/每晚</span>
       </h3>
       <div class="tableContent">
-        <p>
-          <span>携程</span>
-          <span>高级大床房A</span>
+        <p v-for="(item,index) in hotel.products" :key="index">
+          <span>{{item.name}}</span>
+          <span>{{item.bestType}}</span>
           <span>
-            <span class="price">￥193</span>起
+            <span class="price">￥{{item.price}}</span>起
             <i class="el-icon-arrow-right"></i>
           </span>
         </p>
@@ -55,7 +50,7 @@
     </div>
     <!-- 价格区结束 -->
     <!-- 地图开始 -->
-
+    <hotelMap :mapMessage="hotel"></hotelMap>
     <!-- 地图结束 -->
     <!-- 房间基本信息开始 -->
     <div class="roomDetails">
@@ -63,36 +58,82 @@
         <strong>基本信息</strong>
         <span>入住时间: 14:00之后</span>
         <span>离店时间: 12:00之前</span>
-        <span>2010年开业/ 2010年装修</span>
+        <span>{{hotel.creation_time}}/ {{hotel.renovat_time}}</span>
         <span>酒店规模: 153间客房</span>
       </p>
-      <p class="roomFacilities">
+      <!-- <p class="roomFacilities">
         <strong>主要设施</strong>
         <span>热水壶</span>
-      </p>
-      <p>
-        <strong>停车服务</strong>
-      </p>
-      <p>
-        <strong>品牌信息</strong>
+      </p>-->
+      <p
+        v-for="(item,index) in hotel.hotelassets"
+        :key="index"
+        :class="item.type.includes('设施')?'roomFacilities':''"
+      >
+        <strong>{{item.type}}</strong>
+        <span>{{item.name}}</span>
       </p>
     </div>
     <!-- 房间基本信息结束 -->
+    <!-- 评论开始 -->
+    <div class="remarks">
+      <h4>{{hotel.num_collected}}条用户真实评论</h4>
+      <div>
+        <ul>
+          <li>总评数: {{hotel.all_remarks}}</li>
+          <li>好评数: {{hotel.good_remarks + hotel.very_good_remarks}}</li>
+          <li>差评数: {{hotel.bad_remarks + hotel.very_bad_remarks}}</li>
+        </ul>
+      </div>
+    </div>
+    <!-- 评论结束 -->
   </div>
 </template>
 
 <script>
+import hotelMap from "@/components/hotel/hotelMap";
 export default {
   data() {
     return {
-      // tableData: [
-      //   {
-      //     mall: "2016-05-02",
-      //     room: "王小虎",
-      //     price: "上海市普陀区金沙江路 1518 弄"
-      //   }
-      // ]
+      hotel: {},
+      // 图片路径
+      hotelImgs: [
+        "https://ccm.ddcdn.com/ext/photo-w/12/8b/7e/4a/deluxe-twin-bed.jpg",
+        "https://ccm.ddcdn.com/ext/photo-s/15/a5/c3/28/male-dormitory-2-beds.jpg",
+        "https://ccm.ddcdn.com/ext/photo-s/0e/e6/fb/bc/living-room.jpg",
+        "https://ccm.ddcdn.com/ext/photo-s/0f/3a/9e/b9/caption.jpg",
+        "https://ccm.ddcdn.com/ext/photo-s/0c/ec/b3/14/caption.jpg",
+        "https://ccm.ddcdn.com/ext/photo-w/15/9e/00/ce/lobby.jpg"
+      ],
+      // 主要展示的图片路径
+      showHotelImg: ""
     };
+  },
+  methods: {
+    // 变换展示的图片
+    showImg(item) {
+      this.showHotelImg = item;
+    }
+  },
+  mounted() {
+    // 获取酒店id
+    let id = this.$route.query.id;
+    // 请求数据
+    this.$axios({
+      url: "/hotels",
+      params: {
+        id: id
+      }
+    }).then(res => {
+      // 把酒店数据拿出来
+      this.hotel = res.data.data[0];
+      // 设置第一张展示的图片
+      this.showHotelImg = this.hotelImgs[0];
+      let arr = this.hotel.breadcrumb;
+    });
+  },
+  components: {
+    hotelMap
   }
 };
 </script>
@@ -147,6 +188,7 @@ export default {
       margin-bottom: 10px;
       width: 195px;
       height: 110px;
+      cursor: pointer;
       object-fit: cover;
     }
   }
@@ -210,4 +252,18 @@ export default {
   }
 }
 // 房间基本信息结束
+// 评论开始
+.remarks {
+  margin: 50px 0;
+  h4 {
+    margin: 25px 0;
+    font-size: 18px;
+  }
+  ul {
+    li {
+      line-height: 1.5;
+    }
+  }
+}
+// 评论结束
 </style>
