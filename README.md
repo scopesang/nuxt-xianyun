@@ -1,7 +1,11 @@
 # xianyun
->拉取  git clone https://github.com/scopesang/nuxt-xianyun
->安装 npm install
-> nuxt-xianyun  肖徐廖郭张
+
+$拉取  git clone https://github.com/scopesang/nuxt-xianyun
+
+$安装 npm install
+
+$nuxt-xianyun  肖徐廖郭张
+git pull 合并
 
 ## Build Setup
 
