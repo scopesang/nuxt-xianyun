@@ -32,38 +32,43 @@ export default {
   },
   watch: {
     mapMessage() {
-      var map = new AMap.Map("container", {
-        zoom: 11, //级别
-        center: [
-          this.mapMessage.location.longitude,
-          this.mapMessage.location.latitude
-        ], //中心点坐标
-        viewMode: "3D" //使用3D视图
-      });
-
-      // 显示酒店坐标
-      var content = '<i class="el-icon-location"></i>';
-
-      var marker = new AMap.Marker({
-        content: content, // 自定义点标记覆盖物内容
-        position: [
-          this.mapMessage.location.longitude,
-          this.mapMessage.location.latitude
-        ] // 基点位置
-      });
-      map.add(marker);
-      // 加载搜索插件
-      AMap.plugin("AMap.PlaceSearch", () => {
-        var placeSearch = new AMap.PlaceSearch({
-          // city 指定搜索所在城市，支持传入格式有：城市名、citycode和adcode
-          city: this.mapMessage.real_city
+      setTimeout(() => {
+        var map = new AMap.Map("container", {
+          zoom: 11, //级别
+          center: [
+            this.mapMessage.location.longitude,
+            this.mapMessage.location.latitude
+          ], //中心点坐标
+          viewMode: "3D" //使用3D视图
         });
 
-        placeSearch.search(this.mapMessage.scenic[1].name, (status, result) => {
-          // 查询成功时，result即对应匹配的POI信息
-          console.log(result);
+        // 显示酒店坐标
+        var content = '<i class="el-icon-location"></i>';
+
+        var marker = new AMap.Marker({
+          content: content, // 自定义点标记覆盖物内容
+          position: [
+            this.mapMessage.location.longitude,
+            this.mapMessage.location.latitude
+          ] // 基点位置
         });
-      });
+        map.add(marker);
+        // 加载搜索插件;
+        AMap.plugin("AMap.PlaceSearch", () => {
+          var placeSearch = new AMap.PlaceSearch({
+            // city 指定搜索所在城市，支持传入格式有：城市名、citycode和adcode
+            city: this.mapMessage.real_city
+          });
+
+          placeSearch.search(
+            this.mapMessage.scenic[1].name,
+            (status, result) => {
+              // 查询成功时，result即对应匹配的POI信息
+              console.log(result);
+            }
+          );
+        });
+      }, 0);
     }
   },
   mounted() {}
