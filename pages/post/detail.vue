@@ -46,7 +46,7 @@
           <div class="pic">
             <el-upload
               name="files"
-              action="http://127.0.0.1:1337/upload"
+              action="http://157.122.54.189:9095/upload"
               list-type="picture-card"
               :on-preview="handlePictureCardPreview"
               :on-remove="handleRemove"
