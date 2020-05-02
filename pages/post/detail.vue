@@ -64,7 +64,7 @@
         <div class="cm-list">
           <div class="parent clearfix" v-for="(item,index) in comments" :key="index">
             <div class="user">
-              <img :src="`http://127.0.0.1:1337`+item.account.defaultAvatar" alt />
+              <img :src="`http://157.122.54.189:9095`+item.account.defaultAvatar" alt />
               {{item.account.nickname}}
               <span>{{moment(item.created_at).format('YYYY-MM-DD')}}</span>
             </div>
@@ -75,7 +75,7 @@
                 <img
                   v-for="(item,index) in item.pics"
                   :key="index"
-                  :src="`http://127.0.0.1:1337`+item.url"
+                  :src="`http://157.122.54.189:9095`+item.url"
                   alt
                   style="width:80px;height:80px;padding-right:5px"
                 />

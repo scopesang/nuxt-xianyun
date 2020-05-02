@@ -1,7 +1,6 @@
 <template>
   <main id="post">
     <banner></banner>
-
     <indexItem :data="ItemDate"></indexItem>
   </main>
 </template>
