@@ -164,9 +164,9 @@ export default {
       replyId: "",
       nickname: "",
       currentPage: 1,
-      start:0,
-      total:0,
-      pageSize:5
+      start: 0,
+      total: 0,
+      pageSize: 5
     };
   },
   components: {
@@ -187,14 +187,14 @@ export default {
           _limit: this.pageSize
         }
       }).then(res => {
-        const{total}=res.data;
+        const { total } = res.data;
         const { data } = res.data;
-        this.total=total;
+        this.total = total;
         this.comments = data;
       });
     },
     handleRemove(file, fileList) {
-       this.fileList = fileList;
+      this.fileList = fileList;
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
@@ -259,6 +259,7 @@ export default {
       this.replyId = id;
       this.nickname = nickname;
       this.$refs.reply.style.display = "inline-block";
+      document.documentElement.scrollTop = 1900;
     },
     //清空回复人
     clearReply() {
@@ -267,13 +268,13 @@ export default {
       this.$refs.reply.style.display = "none";
     },
     handleSizeChange(val) {
-       this.pageSize=val;
-       this.getComments();
+      this.pageSize = val;
+      this.getComments();
     },
     handleCurrentChange(val) {
-       this.currentPage=val;
-       this.start=(val-1)*this.pageSize;
-       this.getComments();
+      this.currentPage = val;
+      this.start = (val - 1) * this.pageSize;
+      this.getComments();
     }
   }
 };
@@ -390,6 +391,7 @@ export default {
               }
               .son-content {
                 margin-top: 10px;
+                word-wrap: break-word;
               }
               .cmt-ctrl {
                 float: right;
@@ -402,19 +404,19 @@ export default {
           }
           .cmt-message {
             margin: 10px 0px;
+            word-wrap: break-word;
           }
           .cmt-ctrl {
             float: right;
             padding-right: 10px;
-            display: none;
           }
         }
         .parent > .cmt-ctrl {
           font-size: 14px;
-          display: none;
+          visibility: hidden;
         }
         .parent:hover > .cmt-ctrl {
-          display: block;
+          visibility: initial;
         }
       }
     }

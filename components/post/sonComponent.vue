@@ -72,6 +72,7 @@ export default {
   }
   .son-content {
     margin-top: 10px;
+    word-wrap: break-word;
   }
   .cmt-ctrl {
     float: right;
@@ -80,9 +81,9 @@ export default {
 }
 .son > .cmt-ctrl {
   font-size: 14px;
-  display: none;
+  visibility: hidden;
 }
 .son:hover > .cmt-ctrl {
-  display: block;
+  visibility: initial;
 }
 </style>
