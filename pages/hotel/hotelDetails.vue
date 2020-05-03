@@ -2,22 +2,10 @@
   <div class="w">
     <!-- 页面详情开始 -->
     <div class="details">
-      <div class="htmlRoute">
-        <router-link to="/hotel">{{hotel.big_cate}}</router-link>
-        <i class="el-icon-arrow-right"></i>
-        <router-link to="#">{{hotel.real_city}}{{hotel.big_cate}}</router-link>
-        <i class="el-icon-arrow-right"></i>
-        <span>{{hotel.name}}</span>
-      </div>
-      <div class="hotelMessage">
-        <h3>{{hotel.name}}</h3>
-        <p>{{hotel.alias}}</p>
-        <p>
-          <i class="el-icon-location-information">
-            <span>{{hotel.address}}</span>
-          </i>
-        </p>
-      </div>
+      <el-breadcrumb separator-class="el-icon-arrow-right" class="htmlRoute">
+        <el-breadcrumb-item :to="{ path: '/hotel' }">酒店</el-breadcrumb-item>
+        <el-breadcrumb-item v-for="(item,index) in BreadCrumbs" :key="index">{{item}}</el-breadcrumb-item>
+      </el-breadcrumb>
     </div>
     <!-- 页面详情结束 -->
     <!-- 展示图开始 -->
@@ -84,6 +72,10 @@
           <li>好评数: {{hotel.good_remarks + hotel.very_good_remarks}}</li>
           <li>差评数: {{hotel.bad_remarks + hotel.very_bad_remarks}}</li>
         </ul>
+        <starEvaluation class="star" :stars="hotel.stars"></starEvaluation>
+        <rating text="环境" :scores="hotel.scores.environment"></rating>
+        <rating text="产品" :scores="hotel.scores.product"></rating>
+        <rating text="服务" :scores="hotel.scores.service"></rating>
       </div>
     </div>
     <!-- 评论结束 -->
@@ -92,10 +84,13 @@
 
 <script>
 import hotelMap from "@/components/hotel/hotelMap";
+import rating from "@/components/hotel/rating";
+import starEvaluation from "@/components/hotel/starEvaluation";
+
 export default {
   data() {
     return {
-      hotel: {},
+      hotel: { scores: Object },
       // 图片路径
       hotelImgs: [
         "https://ccm.ddcdn.com/ext/photo-w/12/8b/7e/4a/deluxe-twin-bed.jpg",
@@ -106,7 +101,9 @@ export default {
         "https://ccm.ddcdn.com/ext/photo-w/15/9e/00/ce/lobby.jpg"
       ],
       // 主要展示的图片路径
-      showHotelImg: ""
+      showHotelImg: "",
+      // 页面路径信息
+      BreadCrumbs: []
     };
   },
   methods: {
@@ -130,10 +127,14 @@ export default {
       // 设置第一张展示的图片
       this.showHotelImg = this.hotelImgs[0];
       let arr = this.hotel.breadcrumb;
+      // 拿出页面面包屑
+      this.BreadCrumbs = this.hotel.breadcrumb.split(">");
     });
   },
   components: {
-    hotelMap
+    hotelMap,
+    rating,
+    starEvaluation
   }
 };
 </script>
@@ -144,7 +145,7 @@ export default {
   margin: 0 auto;
 }
 // 页面详情开始
-.details {
+/deep/.details {
   margin-bottom: 40px;
   .htmlRoute {
     margin: 15px 0;
@@ -259,9 +260,20 @@ export default {
     margin: 25px 0;
     font-size: 18px;
   }
-  ul {
-    li {
-      line-height: 1.5;
+
+  > div {
+    display: flex;
+    ul {
+      li {
+        line-height: 1.5;
+      }
+    }
+    /deep/.star {
+      margin-top: 34px;
+      margin-left: 75px;
+    }
+    div {
+      margin: 0 30px;
     }
   }
 }
