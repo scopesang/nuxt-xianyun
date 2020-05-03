@@ -11,7 +11,10 @@
         <el-tab-pane label="交通" name="second"></el-tab-pane>
       </el-tabs>
       <div class="around">
-        <p v-for="(item,index) in mapMessage.scenic" :key="index">{{item.name}}</p>
+        <p v-for="(item,index) in mapMessage.scenic" :key="index">
+          <span>{{item.name}}</span>
+          <span>{{item.distance}}米</span>
+        </p>
       </div>
     </div>
   </div>
@@ -32,38 +35,71 @@ export default {
   },
   watch: {
     mapMessage() {
-      var map = new AMap.Map("container", {
-        zoom: 11, //级别
-        center: [
-          this.mapMessage.location.longitude,
-          this.mapMessage.location.latitude
-        ], //中心点坐标
-        viewMode: "3D" //使用3D视图
-      });
-
-      // 显示酒店坐标
-      var content = '<i class="el-icon-location"></i>';
-
-      var marker = new AMap.Marker({
-        content: content, // 自定义点标记覆盖物内容
-        position: [
-          this.mapMessage.location.longitude,
-          this.mapMessage.location.latitude
-        ] // 基点位置
-      });
-      map.add(marker);
-      // 加载搜索插件
-      AMap.plugin("AMap.PlaceSearch", () => {
-        var placeSearch = new AMap.PlaceSearch({
-          // city 指定搜索所在城市，支持传入格式有：城市名、citycode和adcode
-          city: this.mapMessage.real_city
+      setTimeout(() => {
+        var map = new AMap.Map("container", {
+          zoom: 18, //级别
+          center: [
+            this.mapMessage.location.longitude,
+            this.mapMessage.location.latitude
+          ], //中心点坐标
+          viewMode: "3D" //使用3D视图
         });
 
-        placeSearch.search(this.mapMessage.scenic[1].name, (status, result) => {
-          // 查询成功时，result即对应匹配的POI信息
-          console.log(result);
+        // 显示酒店坐标
+        var content = '<i class="el-icon-location" style="width:16px"></i>';
+
+        var marker = new AMap.Marker({
+          content: content, // 自定义点标记覆盖物内容
+          position: [
+            this.mapMessage.location.longitude,
+            this.mapMessage.location.latitude
+          ] // 基点位置
         });
-      });
+        map.add(marker);
+        AMap.service(["AMap.PlaceSearch"], () => {
+          var placeSearch = new AMap.PlaceSearch({
+            pageSize: 30, // 每页10条
+            pageIndex: 1, // 获取第一页
+            city: this.mapMessage.real_city // 指定城市名(如果你获取不到城市名称，这个参数也可以不传，注释掉)
+          });
+
+          // 第一个参数是关键字，这里传入的空表示不需要根据关键字过滤
+          // 第二个参数是经纬度，数组类型
+          // 第三个参数是半径，周边的范围
+          // 第四个参数为回调函数
+          placeSearch.searchNearBy(
+            "",
+            [
+              this.mapMessage.location.longitude,
+              this.mapMessage.location.latitude
+            ],
+            1000,
+            (status, result) => {
+              if (result.info === "OK") {
+                let locationList = result.poiList.pois; // 周边地标建筑列表 // 生成地址列表html
+                console.log(locationList);
+                // 拿出周边景点的数据
+                this.mapMessage.scenic = locationList;
+                // 渲染点
+                locationList.forEach((item, index) => {
+                  let content = `<div class="marker-route marker-marker-bus-from">${index}</div>`;
+                  let marker = new AMap.Marker({
+                    // content: content, // 自定义点标记覆盖物内容
+                    title: item.name,
+                    position: new AMap.LngLat(
+                      item.location.lng,
+                      item.location.lat
+                    ) // 基点位置
+                  });
+                  map.add(marker);
+                });
+              } else {
+                console.log("获取位置信息失败!");
+              }
+            }
+          );
+        });
+      }, 0);
     }
   },
   mounted() {}
@@ -93,6 +129,8 @@ export default {
   height: 295px;
   overflow: auto;
   p {
+    display: flex;
+    justify-content: space-between;
     padding: 10px 0;
     cursor: pointer;
   }
