@@ -23,7 +23,6 @@
        }"
           />
         </div>
-
         <div class="uploadimg">
           <span>请上传封面</span>
           <el-upload action="#" list-type="picture-card" :auto-upload="false">
