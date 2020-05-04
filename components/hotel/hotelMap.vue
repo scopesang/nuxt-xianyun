@@ -13,7 +13,7 @@
       <div class="around">
         <p v-for="(item,index) in mapMessage.scenic" :key="index">
           <span>{{item.name}}</span>
-          <span>{{item.distance}}米</span>
+          <span>{{(item.distance/1000).toFixed(2)}}公里</span>
         </p>
       </div>
     </div>
@@ -25,30 +25,87 @@ export default {
   props: ["mapMessage"],
   data() {
     return {
-      activeName: "first"
+      activeName: "first",
+      // 地图对象
+      map: {},
+      // 周边信息对象
+      circumMarker: []
     };
   },
   methods: {
+    // 切换栏
     handleClick(tab, event) {
-      console.log(tab, event);
+      this.circumMarker.forEach(item => {
+        this.map.remove(item);
+      });
+      this.getCircum(tab.label);
+    },
+    // 获取周边
+    getCircum(tab) {
+      AMap.service(["AMap.PlaceSearch"], () => {
+        this.circumMarker = [];
+        var placeSearch = new AMap.PlaceSearch({
+          pageSize: 30, // 每页10条
+          pageIndex: 1, // 获取第一页
+          city: this.mapMessage.real_city // 指定城市名(如果你获取不到城市名称，这个参数也可以不传，注释掉)
+        });
+        // 第一个参数是关键字，这里传入的空表示不需要根据关键字过滤
+        // 第二个参数是经纬度，数组类型
+        // 第三个参数是半径，周边的范围
+        // 第四个参数为回调函数
+        placeSearch.searchNearBy(
+          tab,
+          [
+            this.mapMessage.location.longitude,
+            this.mapMessage.location.latitude
+          ],
+          5000,
+          (status, result) => {
+            if (result.info === "OK") {
+              let locationList = result.poiList.pois; // 周边地标建筑列表 // 生成地址列表html
+              // 拿出周边的数据
+              this.mapMessage.scenic = locationList;
+              // 渲染点
+              locationList.forEach((item, index) => {
+                // let content = `<i class="marker-route marker-marker-bus-from"></i>`;
+                let circumMarker = new AMap.Marker({
+                  // content: content, // 自定义点标记覆盖物内容
+                  title: item.name,
+                  position: new AMap.LngLat(
+                    item.location.lng,
+                    item.location.lat
+                  ) // 基点位置
+                });
+                this.circumMarker.push(circumMarker);
+                this.map.add(circumMarker);
+              });
+            } else {
+              console.log("获取位置信息失败!");
+            }
+          }
+        );
+      });
     }
   },
   watch: {
     mapMessage() {
       setTimeout(() => {
         var map = new AMap.Map("container", {
-          zoom: 18, //级别
+          zoom: 16, //级别
           center: [
             this.mapMessage.location.longitude,
             this.mapMessage.location.latitude
           ], //中心点坐标
           viewMode: "3D" //使用3D视图
         });
-
+        // 拿出map对象
+        this.map = map;
         // 显示酒店坐标
-        var content = '<i class="el-icon-location" style="width:16px"></i>';
+        var content =
+          '<i class="el-icon-location" style="font-size:30px;color:#3993F8"></i>';
 
         var marker = new AMap.Marker({
+          title: "酒店",
           content: content, // 自定义点标记覆盖物内容
           position: [
             this.mapMessage.location.longitude,
@@ -56,49 +113,8 @@ export default {
           ] // 基点位置
         });
         map.add(marker);
-        AMap.service(["AMap.PlaceSearch"], () => {
-          var placeSearch = new AMap.PlaceSearch({
-            pageSize: 30, // 每页10条
-            pageIndex: 1, // 获取第一页
-            city: this.mapMessage.real_city // 指定城市名(如果你获取不到城市名称，这个参数也可以不传，注释掉)
-          });
-
-          // 第一个参数是关键字，这里传入的空表示不需要根据关键字过滤
-          // 第二个参数是经纬度，数组类型
-          // 第三个参数是半径，周边的范围
-          // 第四个参数为回调函数
-          placeSearch.searchNearBy(
-            "",
-            [
-              this.mapMessage.location.longitude,
-              this.mapMessage.location.latitude
-            ],
-            1000,
-            (status, result) => {
-              if (result.info === "OK") {
-                let locationList = result.poiList.pois; // 周边地标建筑列表 // 生成地址列表html
-                console.log(locationList);
-                // 拿出周边景点的数据
-                this.mapMessage.scenic = locationList;
-                // 渲染点
-                locationList.forEach((item, index) => {
-                  let content = `<div class="marker-route marker-marker-bus-from">${index}</div>`;
-                  let marker = new AMap.Marker({
-                    // content: content, // 自定义点标记覆盖物内容
-                    title: item.name,
-                    position: new AMap.LngLat(
-                      item.location.lng,
-                      item.location.lat
-                    ) // 基点位置
-                  });
-                  map.add(marker);
-                });
-              } else {
-                console.log("获取位置信息失败!");
-              }
-            }
-          );
-        });
+        // 获取周边
+        this.getCircum("风景");
       }, 0);
     }
   },
