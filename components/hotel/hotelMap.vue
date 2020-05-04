@@ -11,7 +11,7 @@
         <el-tab-pane label="交通" name="second"></el-tab-pane>
       </el-tabs>
       <div class="around">
-        <p v-for="(item,index) in mapMessage.scenic" :key="index">
+        <p v-for="(item,index) in mapMessage.scenic" :key="index" @click="handleCircum(item)">
           <span>{{item.name}}</span>
           <span>{{(item.distance/1000).toFixed(2)}}公里</span>
         </p>
@@ -67,9 +67,7 @@ export default {
               this.mapMessage.scenic = locationList;
               // 渲染点
               locationList.forEach((item, index) => {
-                // let content = `<i class="marker-route marker-marker-bus-from"></i>`;
                 let circumMarker = new AMap.Marker({
-                  // content: content, // 自定义点标记覆盖物内容
                   title: item.name,
                   position: new AMap.LngLat(
                     item.location.lng,
@@ -85,6 +83,22 @@ export default {
           }
         );
       });
+    },
+    // 点击周边
+    handleCircum(item) {
+      this.circumMarker.forEach(item => {
+        this.map.remove(item);
+      });
+      this.map.setCenter([item.location.lng, item.location.lat]);
+      // 创建点标记对象
+      let marker = new AMap.Marker({
+        position: new AMap.LngLat(item.location.lng, item.location.lat), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+        title: item.name
+      });
+      // 将点标记存进周边信息对象里
+      this.circumMarker.push(marker);
+      // 在地图上画出点标记
+      this.map.add(marker);
     }
   },
   watch: {
