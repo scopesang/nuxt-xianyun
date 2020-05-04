@@ -116,7 +116,7 @@ export default {
 
       //选择页数触发的   第几页
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        // console.log(`当前页: ${val}`);
         // console.log(this.$route.query);   得到 {city: "197", hotelasset: "3", "": null}
         // var query = JSON.stringify(this.$route.query);
         // 把路由的参数 用 this.$route.query 得到一个对象 {city: "197", hotelasset: "3", "": null}
@@ -124,7 +124,7 @@ export default {
         this.form = this.$route.query 
         //再把分页的参数 通过点语法的形式  加进去给form
         this.form._start = ( val - 1 ) * 10 
-        console.log(this.form._start);
+        // console.log(this.form._start);
         // console.log(this.form);
         this.$axios({
           url:"/hotels",
