@@ -47,7 +47,7 @@ export const actions = {
 
                 //切换城市时 就切换地图
                 var {longitude,latitude} = res.data.data[0].location
-                console.log(latitude);
+                // console.log(latitude);
                   this.longitude = longitude
                   this.latitude = latitude
                 var map = new AMap.Map('container', {
