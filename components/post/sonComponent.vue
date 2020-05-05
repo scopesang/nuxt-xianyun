@@ -10,7 +10,7 @@
       <img
         v-for="(item,index) in data.pics"
         :key="index"
-        :src="`http://127.0.0.1:1337`+item.url"
+        :src="`http://157.122.54.189:9095`+item.url"
         alt
         style="width:80px;height:80px;padding-right:5px"
       />
