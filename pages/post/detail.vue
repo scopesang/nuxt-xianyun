@@ -259,7 +259,6 @@ export default {
       this.replyId = id;
       this.nickname = nickname;
       this.$refs.reply.style.display = "inline-block";
-      document.documentElement.scrollTop = 1900;
     },
     //清空回复人
     clearReply() {
