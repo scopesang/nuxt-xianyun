@@ -132,7 +132,10 @@ export default {
       }, 0);
     }
   },
-  mounted() {}
+  mounted() {},
+  beforeDestroy() {
+    this.map.destroy();
+  }
 };
 </script>
 

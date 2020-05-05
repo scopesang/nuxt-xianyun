@@ -4,7 +4,8 @@
     <div class="details">
       <el-breadcrumb separator-class="el-icon-arrow-right" class="htmlRoute">
         <el-breadcrumb-item :to="{ path: '/hotel' }">酒店</el-breadcrumb-item>
-        <el-breadcrumb-item v-for="(item,index) in BreadCrumbs" :key="index">{{item}}</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/hotel?city='+hotel.city.id }">{{hotel.real_city}}酒店</el-breadcrumb-item>
+        <el-breadcrumb-item>{{hotel.name}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <!-- 页面详情结束 -->
@@ -90,7 +91,7 @@ import starEvaluation from "@/components/hotel/starEvaluation";
 export default {
   data() {
     return {
-      hotel: { scores: Object },
+      hotel: { scores: Object, city: Object },
       // 图片路径
       hotelImgs: [
         "https://ccm.ddcdn.com/ext/photo-w/12/8b/7e/4a/deluxe-twin-bed.jpg",
