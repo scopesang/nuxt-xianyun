@@ -15,6 +15,13 @@ import Header from "@/components/header.vue";
 import Footer from "@/components/footer.vue";
 
 export default {
+  asyncData() {
+    return new Promise(resolve => {
+      setTimeout(function() {
+        resolve({});
+      }, 1000);
+    });
+  },
   components: {
     Header,
     Footer

@@ -45,6 +45,6 @@ export default {
 <style lang="less" scoped >
 #post {
   position: relative;
-  min-width: 2100px;
+  min-width: 1100/2378 * 100vw;
 }
 </style> 

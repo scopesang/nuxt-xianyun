@@ -14,8 +14,12 @@
           </div>
           <p>
             搜索记录
-            <span v-for="(item,index) in this.$store.state.post.searchHistory " :key="index">
-              {{item}}
+            <span
+              v-for="(item,index) in this.$store.state.post.searchHistory "
+              :key="index"
+              class="spanhover"
+            >
+              <a @click="search(item)">{{item}}</a>
               <i class="el-icon-close" @click="delSearchHistory(index)"></i>
             </span>
           </p>
@@ -76,6 +80,13 @@ export default {
 
   methods: {
     search(value) {
+      if (value.trim() == "") {
+        this.$message({
+          message: "内容不能为空",
+          type: "warning"
+        });
+        return;
+      }
       this.$router.push({
         path: "/post",
         query: {
@@ -95,6 +106,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.spanhover {
+  transition: all 1s ease;
+}
+.spanhover:hover {
+  background-color: black;
+  color: #ffffff;
+  padding: 0px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+}
 #banner {
   height: 300px;
   background-image: url(../../assets/images/th.jpg);

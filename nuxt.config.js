@@ -1,33 +1,38 @@
 export default {
   mode: 'universal',
+  render: {
+    // 解决nuxt 项目首屏加载全部js问题
+    // 第三个红圈是重点，你的路由页面太多就不适合默认‘true’！！！！隐藏的地雷
+    resourceHints: false,
+  },
   /*
    ** Headers of the page
    */
   head: {
     title: "世界上最大的旅游网站",
     meta: [{
-        charset: 'utf-8'
-      },
-      {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1'
-      },
-      {
-        hid: 'description',
-        name: 'description',
-        content: process.env.npm_package_description || ''
-      }
+      charset: 'utf-8'
+    },
+    {
+      name: 'viewport',
+      content: 'width=device-width, initial-scale=1'
+    },
+    {
+      hid: 'description',
+      name: 'description',
+      content: process.env.npm_package_description || ''
+    }
     ],
     link: [{
-        rel: 'icon',
-        type: 'image/x-icon',
-        href: '/favicon.ico'
-      },
-      {
-        rel: 'stylesheet',
-        type: 'text/css',
-        href: '//at.alicdn.com/t/font_1168872_ehvuah8v57g.css'
-      } // 新增全局字体样式
+      rel: 'icon',
+      type: 'image/x-icon',
+      href: '/favicon.ico'
+    },
+    {
+      rel: 'stylesheet',
+      type: 'text/css',
+      href: '//at.alicdn.com/t/font_1168872_ehvuah8v57g.css'
+    } // 新增全局字体样式
     ]
   },
   /*
@@ -82,6 +87,6 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
+    extend(config, ctx) { }
   }
 }
